@@ -39,3 +39,20 @@ def test_map_data_view():
     # TODO: Complete the test by asserting that the /map-data/ endpoint
     # returns the correct number of permits for Beverly and Lincoln 
     # Park in 2021
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Assert that we have data for both community areas
+    assert len(data) == 2
+
+    # Assert that the data for each community area is correct
+    beverly_data = next((item for item in data if item["name"] == "Beverly"), None)
+    lincoln_park_data = next((item for item in data if item["name"] == "Lincoln Park"), None)
+
+    assert beverly_data is not None
+    assert lincoln_park_data is not None
+
+    # Assert the number of permits for each community area
+    assert beverly_data["num_permits"] == 2
+    assert lincoln_park_data["num_permits"] == 3

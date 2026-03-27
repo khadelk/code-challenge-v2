@@ -7,6 +7,7 @@ from map import views
 urlpatterns = [
     path("", views.Home.as_view(), name="home"),
     path("map-data/", views.MapDataView.as_view(), name="map_data"),
+    path("permits-by-year/", views.PermitsByYearView.as_view(), name="permits_by_year"),
     path("admin/", admin.site.urls),
     path("robots.txt/", views.robots_txt),
 ]

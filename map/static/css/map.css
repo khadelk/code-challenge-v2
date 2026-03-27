@@ -3,6 +3,66 @@ Add styles unrelated to Bootstrap here. Customizing Bootstrap?
 Make your changes to the Sass file.
 */
 
+#map {
+	position: relative;
+}
+
 #restaurant-map {
-  height: 800px;
+	height: calc(100vh - 4rem);
+}
+
+/* Remove focus outline on map clicks */
+#restaurant-map:focus,
+#restaurant-map:focus-visible,
+#restaurant-map .leaflet-interactive:focus {
+	outline: none;
+}
+
+.map-text-container {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	z-index: 1000;
+	background-color: rgb(248, 249, 250);
+	padding: 2rem;
+	border-radius: 0.25rem;
+	max-width: 390px;
+	opacity: 0.9;
+}
+
+.tooltip-container {
+	display: block;
+}
+
+.tooltip-container .tooltip-title {
+	font-weight: bold;
+	margin-bottom: 0.375rem;
+	text-transform: capitalize;
+}
+
+.tooltip-container span {
+	display: block;
+}
+
+.tooltip-container span:not(:last-child) {
+	margin-bottom: 0.25rem;
+}
+
+.popup-container {
+	display: block;
+	min-width: 300px;
+}
+
+.popup-container .popup-title {
+	font-weight: bold;
+	margin-bottom: 0.375rem;
+	text-transform: capitalize;
+}
+
+.popup-container span {
+	display: block;
+}
+
+.popup-container span:not(:last-child) {
+	margin-bottom: 0.25rem;
 }

@@ -1,0 +1,16 @@
+.legend {
+	height: 100%;
+	width: 100%;
+	padding: 1rem;
+	background-color: rgb(248, 249, 250);
+	opacity: 0.9;
+	border-radius: 0.25rem;
+}
+
+.legend-row i {
+	display: inline-block;
+	height: 1rem;
+	width: 1rem;
+	margin-right: 0.5rem;
+	opacity: 0.8;
+}
