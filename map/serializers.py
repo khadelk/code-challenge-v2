@@ -9,8 +9,8 @@ class CommunityAreaSerializer(serializers.ModelSerializer):
 
     num_permits = serializers.SerializerMethodField()
 
+    # Supplement each community area object with the number of permits issued in the given year.
     def get_num_permits(self, obj):
-        # TODO: supplement each community area object with the number of permits issued in the given year.
 
         # get the year from the request context
         year = self.context.get("year")

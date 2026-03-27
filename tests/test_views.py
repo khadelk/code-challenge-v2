@@ -36,9 +36,7 @@ def test_map_data_view():
     client = APIClient()
     response = client.get(reverse("map_data", query={"year": 2021}))
 
-    # TODO: Complete the test by asserting that the /map-data/ endpoint
-    # returns the correct number of permits for Beverly and Lincoln 
-    # Park in 2021
+    # Asserting that the /map-data/ endpoint returns the correct number of permits for Beverly and Lincoln Park in 2021
 
     assert response.status_code == 200
     data = response.json()
@@ -56,3 +54,20 @@ def test_map_data_view():
     # Assert the number of permits for each community area
     assert beverly_data["num_permits"] == 2
     assert lincoln_park_data["num_permits"] == 3
+
+    # Add tests for the /permits-by-year/ endpoint
+    response = client.get(reverse("permits_by_year", query={"area_id": area1.area_id}))     
+    assert response.status_code == 200
+    permit_data = response.json()
+
+    # Assert that we have data for the correct neighborhood
+    assert permit_data["neighborhood"] == "Beverly"
+
+    # Assert that we have permit counts for the correct years
+    assert len(permit_data["permits_by_year"]) >= 1
+
+    # Assert that the permit counts are correct for the years we have data for
+    beverly_permits_2021 = next((item for item in permit_data["permits_by_year"] if item["year"] == 2021), None)
+
+    assert beverly_permits_2021 is not None
+    assert beverly_permits_2021["count"] == 2

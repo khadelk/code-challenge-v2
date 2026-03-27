@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import AreaData from './AreaData';
 import AreaPopupComponent from './AreaPopup';
 
 import { MapContainer, TileLayer, GeoJSON, useMap, ZoomControl } from 'react-leaflet';
@@ -197,13 +196,14 @@ export default function RestaurantPermitMap() {
 				const div = L.DomUtil.create('div', 'legend');
 				const r0 = `${minPermits}`;
 				const r1Start = Math.max(minPermits + 1, 1);
-				const r1End = Math.max(step1, r1Start);
-				const r2Start = Math.max(step1 + 1, r1End + 1);
+				const r1End = Math.max(step1 - 1, r1Start);
+
+				const r2Start = Math.max(step1, r1End + 1);
 				const r2End = Math.max(step2, r2Start);
 				const r3Start = Math.max(step2 + 1, r2End + 1);
 				const r3End = maxPermits;
 
-				const row0 = `<i style="background:${communityAreaColors[0]}"></i> ${r0}`;
+				const row0 = `<i style="background:${communityAreaColors[0]}"></i> ${minPermits}`;
 				const row1 = `<i style="background:${communityAreaColors[1]}"></i> ${r1Start} - ${r1End}`;
 				const row2 = `<i style="background:${communityAreaColors[2]}"></i> ${r2Start} - ${r2End}`;
 				const row3 = `<i style="background:${communityAreaColors[3]}"></i> ${r3Start} - ${r3End}`;
@@ -249,7 +249,6 @@ export default function RestaurantPermitMap() {
 					<span>Maximum number of restaurant permits in a single area: </span>
 					{maxNumPermits}
 				</p>
-				{/* <AreaData area={area} year={year} /> */}
 			</div>
 			<MapContainer id='restaurant-map' center={[41.88, -87.62]} zoom={10} zoomControl={false}>
 				<TileLayer
