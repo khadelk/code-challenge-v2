@@ -83,8 +83,8 @@ export default function RestaurantPermitMap() {
 	const TooltipContent = (areaData) => {
 		return (
 			<>
-				<div class='tooltip-container'>
-					<span class='tooltip-title'>{areaData?.areaData?.name}</span>
+				<div className='tooltip-container'>
+					<span className='tooltip-title'>{areaData?.areaData?.name}</span>
 					<span>Year: {year}</span>
 					<span>Restaurant permits: {areaData?.areaData?.num_permits ?? 0}</span>
 				</div>
