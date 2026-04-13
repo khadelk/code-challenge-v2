@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import AreaPopupComponent from './AreaPopup';
 
@@ -61,13 +61,19 @@ export default function RestaurantPermitMap() {
 			});
 	}, [year]);
 
+	// Determine the range of permits applied in a given year, used by getColor and Legend functions
+	const stats = useMemo(() => {
+		const values = currentYearData.map((a) => a.num_permits);
+		const minPermits = Math.min(...values);
+		const maxPermits = Math.max(...values);
+		return { minPermits, maxPermits, range: maxPermits - minPermits };
+	}, [currentYearData]);
+
 	function getColor(numPermits) {
 		// Set a community area's color using the communityAreaColors constant above
-		// Determine the range of permits applied in a given year
-		const minPermits = Math.min(...currentYearData.map((area) => area.num_permits));
-		const maxPermits = Math.max(...currentYearData.map((area) => area.num_permits));
-		const range = maxPermits - minPermits;
-		// Step 2: Define dynamic ranges for each communityAreaColor
+
+		const { minPermits, range } = stats;
+		// Define dynamic ranges for each communityAreaColor
 		// If there are no permits in a given year, return the lightest color
 		if (range == 0) return communityAreaColors[0];
 
@@ -172,52 +178,36 @@ export default function RestaurantPermitMap() {
 		const map = useMap();
 		useEffect(() => {
 			if (!map || currentYearData.length === 0) return;
-
-			const minPermits = Math.min(...currentYearData.map((area) => area.num_permits));
-			const maxPermits = Math.max(...currentYearData.map((area) => area.num_permits));
-			const range = maxPermits - minPermits;
-
-			let step1 = 0;
-			let step2 = 0;
-			let step3 = 0;
-
-			if (range > 0) {
-				step1 = Math.floor(minPermits + range * 0.5);
-				step2 = Math.floor(minPermits + range * 0.75);
-				step3 = maxPermits;
-			} else {
-				step1 = minPermits;
-				step2 = minPermits;
-				step3 = minPermits;
-			}
+			const { minPermits, maxPermits, range } = stats;
 
 			const legendControl = L.control({ position: 'bottomright' });
 			legendControl.onAdd = () => {
 				const div = L.DomUtil.create('div', 'legend');
-				const r0 = `${minPermits}`;
-				const r1Start = Math.max(minPermits + 1, 1);
-				const r1End = Math.max(step1 - 1, r1Start);
 
-				const r2Start = Math.max(step1, r1End + 1);
-				const r2End = Math.max(step2, r2Start);
-				const r3Start = Math.max(step2 + 1, r2End + 1);
-				const r3End = maxPermits;
+				const thresholds = [
+					minPermits,
+					Math.floor(minPermits + range * 0.5),
+					Math.floor(minPermits + range * 0.75),
+					maxPermits,
+				];
 
-				const row0 = `<i style="background:${communityAreaColors[0]}"></i> ${minPermits}`;
-				const row1 = `<i style="background:${communityAreaColors[1]}"></i> ${r1Start} - ${r1End}`;
-				const row2 = `<i style="background:${communityAreaColors[2]}"></i> ${r2Start} - ${r2End}`;
-				const row3 = `<i style="background:${communityAreaColors[3]}"></i> ${r3Start} - ${r3End}`;
+				const legendLabels = [
+					`${thresholds[0]}`,
+					`${thresholds[0] + 1} - ${thresholds[1] - 1}`,
+					`${thresholds[1]} - ${thresholds[2] - 1}`,
+					`${thresholds[2]} - ${thresholds[3]}`,
+				];
 
 				let body = `<h4>Legend</h4>`;
 				body += `<p>Number of restaurant permits issued:</p>`;
-				body += `<div class="legend-row">${row0}</div>`;
 
 				if (range > 0) {
-					body += `<div class="legend-row">${row1}</div>`;
-					body += `<div class="legend-row">${row2}</div>`;
-					body += `<div class="legend-row">${row3}</div>`;
+					legendLabels.forEach((label, index) => {
+						const row = `<i style="background:${communityAreaColors[index]}"></i> ${label}`;
+						body += `<div class="legend-row">${row}</div>`;
+					});
 				} else {
-					body += `<div class="legend-row">${row1}</div>`;
+					body += `<div class="legend-row"><i style="background:${communityAreaColors[0]}"></i> ${minPermits}</div>`;
 				}
 
 				div.innerHTML = body;
