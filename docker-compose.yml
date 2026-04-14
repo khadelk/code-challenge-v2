@@ -32,8 +32,8 @@ services:
       - map-node-modules:/app/node_modules
     environment:
       DJANGO_SECRET_KEY: reallysupersecret
-      DJANGO_MANAGEPY_MIGRATE: "on"
-      DJANGO_DEBUG: "True"
+      DJANGO_MANAGEPY_MIGRATE: 'on'
+      DJANGO_DEBUG: 'True'
       PGPASSWORD: postgres
     entrypoint: /app/docker-entrypoint.sh
     command: python manage.py runserver 0.0.0.0:8000
@@ -41,8 +41,9 @@ services:
   postgres:
     container_name: map-postgres
     image: postgis/postgis
+    platform: linux/amd64
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
       timeout: 5s
       retries: 5
