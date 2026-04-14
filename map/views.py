@@ -3,6 +3,7 @@ import os
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.db.models import Count
+from django.db.models.functions import ExtractYear
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -43,7 +44,7 @@ class PermitsByYearView(APIView):
         permits_by_year_qs = (
             RestaurantPermit.objects
             .filter(community_area_id=area_id)
-            .extra(select={"year": "EXTRACT(year FROM issue_date)"})
+            .annotate(year=ExtractYear('issue_date'))
             .values("year")
             .annotate(count=Count("id"))
             .order_by("year")
